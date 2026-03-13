@@ -11,6 +11,7 @@ __pycache__/
 # PyInstaller - temporales de compilación (no necesarios, se regeneran)
 dist/
 build/
+output/
 
 # OS
 .DS_Store
