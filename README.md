@@ -9,8 +9,9 @@ Aplicación de escritorio para gestionar archivos PDF: unirlos y reordenar sus p
 ## ¿Qué hace?
 
 ### Pestaña "Unir PDFs"
-- Arrastra varios archivos PDF a la lista (o ábrelos con el botón)
-- Reordénalos arrastrando dentro de la lista
+- Arrastra varios archivos PDF al área de miniaturas (o usa **Añadir PDFs**)
+- Verás la primera página de cada archivo como miniatura
+- Reordénalos arrastrando una miniatura encima de otra (los demás se desplazan automáticamente)
 - Pulsa **Unir PDFs** y elige dónde guardar el resultado
 
 ### Pestaña "Reordenar páginas"
