@@ -6,9 +6,10 @@ from PyQt5.QtWidgets import (
     QWidget, QLabel, QLineEdit, QVBoxLayout, QHBoxLayout,
     QFileDialog, QMessageBox, QApplication
 )
+from PyQt5.QtCore import Qt
 
 from core.pdf_merge import merge_pdfs
-from ui.widgets import FileListWidget, make_btn
+from ui.widgets import MergeFileList, make_btn
 
 
 class MergeTab(QWidget):
@@ -35,17 +36,21 @@ class MergeTab(QWidget):
         output_row.addWidget(self.btn_save_to)
 
         # Instrucción
-        hint = QLabel('Arrastra PDFs a la lista o usa el botón. '
-                      'Reordénalos arrastrando. Pulsa Unir cuando estén listos.')
+        hint = QLabel('Arrastra PDFs a la lista o usa "Añadir PDFs". '
+                      'Reordénalos arrastrando una miniatura encima de otra. '
+                      'Pulsa Unir cuando estén listos.')
         hint.setStyleSheet('color: #6b7099; font-size: 13px; padding: 2px 0;')
         hint.setWordWrap(True)
 
-        # Lista de archivos
-        self.pdf_list = FileListWidget(self)
+        # Grid de miniaturas
+        self.pdf_list = MergeFileList()
 
         # Botones de acción
         btn_row = QHBoxLayout()
         btn_row.setSpacing(8)
+        self.btn_add = make_btn('Añadir PDFs', 'primary',
+                                'Abre uno o varios PDFs y los añade a la lista')
+        self.btn_add.clicked.connect(self._add_files)
         self.btn_delete = make_btn('Eliminar', 'danger',
                                    'Elimina los archivos seleccionados de la lista\n'
                                    '(no borra el archivo del disco)')
@@ -59,6 +64,7 @@ class MergeTab(QWidget):
         self.btn_close = make_btn('Cerrar', 'ghost', 'Cierra la aplicación')
         self.btn_close.clicked.connect(QApplication.quit)
 
+        btn_row.addWidget(self.btn_add)
         btn_row.addWidget(self.btn_delete)
         btn_row.addStretch()
         btn_row.addWidget(self.btn_merge)
@@ -72,6 +78,12 @@ class MergeTab(QWidget):
         self.setLayout(layout)
 
     # ---------------------------------------------------------------- slots --
+
+    def _add_files(self):
+        paths, _ = QFileDialog.getOpenFileNames(
+            self, 'Añadir PDFs', os.getcwd(), 'PDF (*.pdf)')
+        for path in paths:
+            self.pdf_list.add_pdf(path)
 
     def _choose_save_path(self):
         path, _ = QFileDialog.getSaveFileName(
@@ -95,7 +107,8 @@ class MergeTab(QWidget):
         if self.pdf_list.count() == 0:
             QMessageBox.warning(self, 'PDF Manager', 'La lista está vacía.')
             return
-        paths = [self.pdf_list.item(i).text() for i in range(self.pdf_list.count())]
+        paths = [self.pdf_list.item(i).data(Qt.UserRole)
+                 for i in range(self.pdf_list.count())]
         try:
             merge_pdfs(paths, self.output_file.text())
             self.pdf_list.clear()
