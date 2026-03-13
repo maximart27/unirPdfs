@@ -1,0 +1,20 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Claude session notes (privado)
+CLAUDE.md
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# PyInstaller - temporales de compilación (no necesarios, se regeneran)
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
